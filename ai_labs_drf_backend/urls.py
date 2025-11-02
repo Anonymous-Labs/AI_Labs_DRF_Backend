@@ -24,5 +24,8 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/user/', include('user.urls')),
+    path('api/project/', include('project.urls')),
+    path('api/node/', include('node.urls')),
     path('', include(router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
