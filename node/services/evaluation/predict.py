@@ -13,8 +13,7 @@ def predict(model: Any, X: pd.DataFrame) -> Dict[str, Any]:
     Returns:
         dict: {
             'predictions': pd.Series,
-            'prediction_probs': Optional[pd.DataFrame],
-            'prediction_stats': dict
+            'prediction_probs': Optional[pd.DataFrame]
         }
     
     Raises:
@@ -46,17 +45,7 @@ def predict(model: Any, X: pd.DataFrame) -> Dict[str, Any]:
         except Exception:
             y_prob = None
 
-    # ✅ Compute stats for predictions
-    prediction_stats = {
-        "mean": float(np.mean(y_pred)),
-        "std": float(np.std(y_pred)),
-        "min": float(np.min(y_pred)),
-        "max": float(np.max(y_pred)),
-        "n_predictions": len(y_pred)
-    }
-
     return {
         "predictions": y_pred_series,
-        "prediction_probs": y_prob,
-        "prediction_stats": prediction_stats
+        "prediction_probs": y_prob
     }

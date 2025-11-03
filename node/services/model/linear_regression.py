@@ -1,5 +1,4 @@
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
 import pandas as pd
 
 def linear_regression(X_train: pd.DataFrame, y_train: pd.Series, fit_intercept: bool = True):
@@ -33,11 +32,4 @@ def linear_regression(X_train: pd.DataFrame, y_train: pd.Series, fit_intercept: 
     model = LinearRegression(fit_intercept=fit_intercept)
     model.fit(X_train, y_train)
 
-    # Prepare model info
-    model_info = {
-        "coefficients": dict(zip(X_train.columns, model.coef_)),
-        "intercept": model.intercept_,
-        "r2_score": r2_score(y_train, model.predict(X_train))
-    }
-
-    return {"model": model, "model_info": model_info}
+    return model
