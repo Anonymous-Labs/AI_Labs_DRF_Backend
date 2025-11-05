@@ -23,6 +23,7 @@ User = get_user_model()
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@transaction.atomic
 def signup(request):
     """
     User signup endpoint that creates a user account and sends OTP via email.
@@ -87,7 +88,7 @@ def signup(request):
                 message=plain_message,
                 recipient_list=[email],
                 html_message=html_message,
-                backend_key="noreply",
+                backend_key="ai-lab",
                 fail_silently=False,
             )
             return Response({
@@ -95,6 +96,7 @@ def signup(request):
                 'email': email
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
+            transaction.set_rollback(True)
             return Response({
                 'error': 'Failed to send email. Please try again later.'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -143,6 +145,7 @@ def verify_otp(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@transaction.atomic
 def resend_otp(request):
     """
     Resend OTP endpoint for users who didn't receive the OTP or it expired.
@@ -196,13 +199,14 @@ def resend_otp(request):
             message=plain_message,
             recipient_list=[email],
             html_message=html_message,
-            backend_key="noreply",
+            backend_key="ai-lab",
             fail_silently=False,
         )
         return Response({
             'message': 'OTP has been resent to your email.'
         }, status=status.HTTP_200_OK)
     except Exception as e:
+        transaction.set_rollback(True)
         return Response({
             'error': 'Failed to send email. Please try again later.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -340,7 +344,7 @@ def password_reset_link(request):
             message=plain_message,
             recipient_list=[email],
             html_message=html_message,
-            backend_key="noreply",
+            backend_key="ai-lab",
             fail_silently=False,
         )
         return Response(

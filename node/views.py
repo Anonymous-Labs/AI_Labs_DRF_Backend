@@ -15,7 +15,7 @@ def execute(request):
 
     try:
         # Dynamically import and execute the class method
-        class_reference = import_string(f'node.models.input.{class_name}')
+        class_reference = import_string(f'node.modules.input.{class_name}')
         result = class_reference.execute(payload)
         return JsonResponse({"message": result})
     except ModuleNotFoundError:
@@ -34,7 +34,7 @@ def delete(request):
 
     try:
         # Dynamically import and execute the class delete method
-        class_reference = import_string(f'node.models.input.{class_name}')
+        class_reference = import_string(f'node.modules.input.{class_name}')
         metadata = payload.get('metadata', {})
         obj_id = metadata.get('id')
 

@@ -11,8 +11,8 @@ class SignupSerializer(serializers.Serializer):
     email = serializers.EmailField()
     username = serializers.CharField(max_length=150)
     password = serializers.CharField(write_only=True, min_length=8)
-    first_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
-    last_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    first_name = serializers.CharField(max_length=150)
+    last_name = serializers.CharField(max_length=150)
 
     def validate_email(self, value):
         """Check if email is already registered and verified"""

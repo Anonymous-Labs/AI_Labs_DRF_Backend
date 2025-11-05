@@ -161,15 +161,15 @@ MEDIA_URL = "/media/"
 
 # Email Configuration
 EMAIL_BACKENDS = {
-    "noreply": {
+    "ai-lab": {
         "backend": os.getenv("NO_REPLY_EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"),
         "host": os.getenv("NO_REPLY_EMAIL_SMTP_HOST", "smtp.hostinger.com"),
         "port": int(os.getenv("NO_REPLY_EMAIL_SMTP_PORT", "587")),
         "use_ssl": os.getenv("NO_REPLY_EMAIL_USE_SSL", "false").lower() == "true",
         "use_tls": os.getenv("NO_REPLY_EMAIL_USE_TLS", "true").lower() == "true",
-        "email_user": os.getenv("NO_REPLY_EMAIL_HOST_USER", "ailab@tejasvaij.com"),
+        "email_user": os.getenv("NO_REPLY_EMAIL_HOST_USER", "ai-lab@tejasvaij.com"),
         "email_password": os.getenv("NO_REPLY_EMAIL_HOST_PASSWORD", "Changeoncedone@123"),
-        "default_from_email": os.getenv("NO_REPLY_DEFAULT_FROM_EMAIL", "AI Labs <ailab@tejasvaij.com>"),
+        "default_from_email": os.getenv("NO_REPLY_DEFAULT_FROM_EMAIL", "AI Labs <ai-lab@tejasvaij.com>"),
     },
     "support": {
         "backend": os.getenv("SUPPORT_EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"),
@@ -177,8 +177,10 @@ EMAIL_BACKENDS = {
         "port": int(os.getenv("SUPPORT_EMAIL_SMTP_PORT", "587")),
         "use_ssl": os.getenv("SUPPORT_EMAIL_USE_SSL", "false").lower() == "true",
         "use_tls": os.getenv("SUPPORT_EMAIL_USE_TLS", "true").lower() == "true",
-        "email_user": os.getenv("SUPPORT_EMAIL_HOST_USER", "ailab@tejasvaij.com"),
+        "email_user": os.getenv("SUPPORT_EMAIL_HOST_USER", "ai-lab@tejasvaij.com"),
         "email_password": os.getenv("SUPPORT_EMAIL_HOST_PASSWORD", "Changeoncedone@123"),
-        "default_from_email": os.getenv("SUPPORT_DEFAULT_FROM_EMAIL", "AI Labs Support <ailab@tejasvaij.com>"),
+        "default_from_email": os.getenv("SUPPORT_DEFAULT_FROM_EMAIL", "AI Labs Support <ai-lab@tejasvaij.com>"),
     },
 }
+
+DEFAULT_EMAIL_BACKEND_KEY = 'ai-lab'
