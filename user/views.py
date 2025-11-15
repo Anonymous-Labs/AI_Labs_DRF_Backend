@@ -34,8 +34,8 @@ def signup(request):
         email = serializer.validated_data['email']
         username = serializer.validated_data['username']
         password = serializer.validated_data['password']
-        first_name = serializer.validated_data.get('first_name', '')
-        last_name = serializer.validated_data.get('last_name', '')
+        first_name = serializer.validated_data['first_name']
+        last_name = serializer.validated_data['last_name']
 
         # Check if user already exists but is not verified
         user, created = User.objects.get_or_create(

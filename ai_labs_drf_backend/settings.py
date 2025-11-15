@@ -64,6 +64,12 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
+
 ROOT_URLCONF = 'ai_labs_drf_backend.urls'
 
 TEMPLATES = [

@@ -1,50 +1,118 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from django.utils.module_loading import import_string
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
+from rest_framework.response import Response
 
-@api_view(['POST', 'PATCH'])
-@permission_classes([IsAuthenticated])
-def execute(request):
-    payload = request.data
-    class_name = payload.get('type')
+from node.serializers import (
+    IntegerSerializer,
+    TextSerializer,
+    DatasetSerializer,
+    FeatureSelectionSerializer,
+    TrainTestSplitSerializer,
+    LinearRegressionSerializer,
+    PredictSerializer,
+    AccuracySerializer,
+    Add2IntSerializer,
+)
 
-    if not class_name:
-        return JsonResponse({"error": "Type attribute is missing in the payload."}, status=400)
+from node.modules.input.integer import Integer
+from node.modules.output.text import Text
+from node.modules.input.dataset import Dataset
+from node.modules.preprocessing.feature_selection import FeatureSelection
+from node.modules.preprocessing.train_test_split import TrainTestSplit
+from node.modules.model.linear_regression import LinearRegression
+from node.modules.evaluation.predict import Predict
+from node.modules.evaluation.accuracy import Accuracy
+from node.modules.arithmetic.add2int import Add2Int
 
-    try:
-        # Dynamically import and execute the class method
-        class_reference = import_string(f'node.modules.input.{class_name}')
-        result = class_reference.execute(payload)
-        return JsonResponse({"message": result})
-    except ModuleNotFoundError:
-        return JsonResponse({"error": f"Class {class_name} not found."}, status=404)
-    except AttributeError:
-        return JsonResponse({"error": f"Class {class_name} does not have an execute method."}, status=400)
+class IntegerViewSet(viewsets.ModelViewSet):
+    queryset = Integer.objects.all()
+    serializer_class = IntegerSerializer
+    permission_classes = [IsAuthenticated]
 
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def delete(request):
-    payload = request.data
-    class_name = payload.get('type')
+    @action(methods=["post"], detail=True) 
+    def execute(self, request, pk=None): 
+        result = Integer.execute(request.data)
+        return Response(result)
 
-    if not class_name:
-        return JsonResponse({"error": "Type attribute is missing in the payload."}, status=400)
+class TextViewSet(viewsets.ModelViewSet):
+    queryset = Text.objects.all()
+    serializer_class = TextSerializer
+    permission_classes = [IsAuthenticated]
 
-    try:
-        # Dynamically import and execute the class delete method
-        class_reference = import_string(f'node.modules.input.{class_name}')
-        metadata = payload.get('metadata', {})
-        obj_id = metadata.get('id')
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = Text.execute(request.data)
+        return Response(result)
 
-        if not obj_id:
-            return JsonResponse({"error": "ID is missing in the metadata."}, status=400)
+class DatasetViewSet(viewsets.ModelViewSet):
+    queryset = Dataset.objects.all()
+    serializer_class = DatasetSerializer
+    permission_classes = [IsAuthenticated]
 
-        obj = get_object_or_404(class_reference, id=obj_id)
-        obj.delete()
-        return JsonResponse({"message": "Object deleted successfully."})
-    except ModuleNotFoundError:
-        return JsonResponse({"error": f"Class {class_name} not found."}, status=404)
-    except AttributeError:
-        return JsonResponse({"error": f"Class {class_name} does not have a delete method."}, status=400)
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = Dataset.execute(request.data)
+        return Response(result)
+
+class FeatureSelectionViewSet(viewsets.ModelViewSet):
+    queryset = FeatureSelection.objects.all()
+    serializer_class = FeatureSelectionSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = FeatureSelection.execute(request.data)
+        return Response(result)
+
+class TrainTestSplitViewSet(viewsets.ModelViewSet):
+    queryset = TrainTestSplit.objects.all()
+    serializer_class = TrainTestSplitSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = TrainTestSplit.execute(request.data)
+        return Response(result)
+
+class LinearRegressionViewSet(viewsets.ModelViewSet):
+    queryset = LinearRegression.objects.all()
+    serializer_class = LinearRegressionSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = LinearRegression.execute(request.data)
+        return Response(result)
+
+class PredictViewSet(viewsets.ModelViewSet):
+    queryset = Predict.objects.all()
+    serializer_class = PredictSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = Predict.execute(request.data)
+        return Response(result)
+
+class AccuracyViewSet(viewsets.ModelViewSet):
+    queryset = Accuracy.objects.all()
+    serializer_class = AccuracySerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = Accuracy.execute(request.data)
+        return Response(result)
+
+class Add2IntViewSet(viewsets.ModelViewSet):
+    queryset = Add2Int.objects.all()
+    serializer_class = Add2IntSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(methods=["post"], detail=False)
+    def execute(self, request):
+        result = Add2Int.execute(request.data)
+        return Response(result)
