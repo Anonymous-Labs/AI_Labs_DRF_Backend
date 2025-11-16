@@ -9,23 +9,32 @@ class Add2Int(BaseNode):
         on_delete=models.CASCADE,
         related_name='add2int_nodes'
     )
-    sum = models.IntegerField()
+    sum = models.IntegerField(blank=True, null=True, default=0)
+
 
     @staticmethod
-    def execute(payload):
-        # Extract metadata and parameters
-        metadata = payload.get("metadata", {})
-        params = {
-            key.split("_")[-1]: value
-            for key, value in payload.items()
-            if key.startswith("I_")
-        }
+    def execute(payload, instance_id=None):
+        # Extract parameters from payload
+        # Expected format: I_Add2Int_num1, I_Add2Int_num2
+        params = {}
+        for key, value in payload.items():
+            if key.startswith("I_Add2Int_"):
+                # Extract parameter name (e.g., "num1" from "I_Add2Int_num1")
+                param_name = key.replace("I_Add2Int_", "")
+                params[param_name] = value
+
+        # Validate required parameters
+        if 'num1' not in params or 'num2' not in params:
+            raise ValueError("Both 'I_Add2Int_num1' and 'I_Add2Int_num2' are required in the payload.")
 
         # Perform the computation
-        result_sum = add_two_numbers(**params)
+        result_sum = add_two_numbers(num1=params['num1'], num2=params['num2'])
 
-        # Check if we're updating or creating
-        instance_id = metadata.get("id")
+        # Use instance_id from parameter or try to get from metadata
+        if not instance_id:
+            metadata = payload.get("metadata", {})
+            instance_id = metadata.get("id")
+
         if instance_id:
             # Update existing object
             try:
@@ -33,16 +42,13 @@ class Add2Int(BaseNode):
                 add2int_instance.sum = result_sum
                 add2int_instance.save()
             except Add2Int.DoesNotExist:
-                # Fallback: if object not found, create a new one
-                add2int_instance = Add2Int.objects.create(sum=result_sum)
+                raise ValueError(f"Add2Int instance with id={instance_id} not found.")
         else:
-            # Create new object
-            add2int_instance = Add2Int.objects.create(sum=result_sum)
+            raise ValueError("Instance ID is required. Either pass instance_id parameter or include it in metadata.")
 
-        # Serialize all fields dynamically
-        data = {
-            field.name: getattr(add2int_instance, field.name)
-            for field in add2int_instance._meta.fields
+        # Return the sum and instance data
+        return {
+            'id': add2int_instance.id,
+            'sum': add2int_instance.sum,
+            'workspace': add2int_instance.workspace.id
         }
-
-        return data

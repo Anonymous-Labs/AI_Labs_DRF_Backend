@@ -112,7 +112,8 @@ class Add2IntViewSet(viewsets.ModelViewSet):
     serializer_class = Add2IntSerializer
     permission_classes = [IsAuthenticated]
 
-    @action(methods=["post"], detail=False)
-    def execute(self, request):
-        result = Add2Int.execute(request.data)
+    @action(methods=["post"], detail=True)
+    def execute(self, request, pk=None):
+        instance = self.get_object()
+        result = Add2Int.execute(request.data, instance_id=instance.id)
         return Response(result)

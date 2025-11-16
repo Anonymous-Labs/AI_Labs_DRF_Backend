@@ -21,6 +21,9 @@ class TextSerializer(serializers.ModelSerializer):
     class Meta:
         model = Text
         fields = "__all__"
+        extra_kwargs = {
+            'text': {'read_only': True}
+        }
 
 
 class DatasetSerializer(serializers.ModelSerializer):
@@ -63,5 +66,8 @@ class Add2IntSerializer(serializers.ModelSerializer):
     class Meta:
         model = Add2Int
         fields = "__all__"
+        extra_kwargs = {
+            'sum': {'read_only': True}
+        }
 
 

@@ -7,7 +7,7 @@ class Text(BaseNode):
         on_delete=models.CASCADE,
         related_name='text_nodes'
     )
-    text = models.TextField()
+    text = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return str(self.text)
